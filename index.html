@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interaktywna platforma zachęcająca do zdrowego stylu życia, aktywności fizycznej i prawidłowego żywienia. Sprawdź swoje BMI i odkryj zdrowe przepisy.">
+    <meta name="author" content="Damian Kita">
+    <meta name="theme-color" content="#10b981">
+    <title>VitaLife - Zdrowy Styl Życia | Damian Kita</title>
+    
+    <style>
+        :root {
+            /* Light mode (default) */
+            --primary: #059669;
+            --primary-light: #34d399;
+            --primary-dark: #047857;
+            --secondary: #0ea5e9;
+            --accent: #f59e0b;
+            --bg-main: #ffffff;
+            --bg-card: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --gradient-1: linear-gradient(135deg, #059669, #0ea5e9);
+            --gradient-2: linear-gradient(135deg, #10b981, #3b82f6);
+        }
+
+        [data-theme="dark"] {
+            --primary: #10b981;
+            --primary-light: #34d399;
+            --primary-dark: #059669;
+            --secondary: #38bdf8;
+            --accent: #fbbf24;
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --bg-secondary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            --gradient-1: linear-gradient(135deg, #10b981, #0ea5e9);
+            --gradient-2: linear-gradient(135deg, #34d399, #60a5fa);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Nawigacja */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            padding: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .mobile-menu span {
+            width: 25px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 2rem 2rem;
+            background: var(--bg-secondary);
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(16, 185, 129, 0.03) 10px,
+                rgba(16, 185, 129, 0.03) 20px
+            );
+            animation: moveGrid 20s linear infinite;
+        }
+
+        [data-theme="dark"] .hero::before {
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(16, 185, 129, 0.05) 10px,
+                rgba(16, 185, 129, 0.05) 20px
+            );
+        }
+
+        @keyframes moveGrid {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3)); }
+            to { filter: drop-shadow(0 0 20px rgba(14, 165, 233, 0.3)); }
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--gradient-1);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            filter: brightness(1.1);
+        }
+
+        /* Sekcje ogólne */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--primary);
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+        /* Kalkulator BMI */
+        .bmi-calculator {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .bmi-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group input {
+            padding: 1rem;
+            border: 2px solid var(--border);
+            background: var(--bg-main);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .calculate-btn {
+            padding: 1rem;
+            background: var(--gradient-2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .calculate-btn:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-lg);
+            filter: brightness(1.1);
+        }
+
+        .bmi-result {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid var(--border);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .bmi-value {
+            font-size: 4rem;
+            font-weight: bold;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 1rem 0;
+        }
+
+        .bmi-category {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            background: var(--bg-card);
+            border: 2px solid;
+        }
+
+        .underweight { color: var(--secondary); border-color: var(--secondary); }
+        .normal { color: var(--primary); border-color: var(--primary); }
+        .overweight { color: var(--accent); border-color: var(--accent); }
+        .obese { color: #ef4444; border-color: #ef4444; }
+
+        .bmi-info {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 1rem;
+            line-height: 1.6;
+        }
+
+        .bmi-scale {
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(to right, 
+                var(--secondary) 0%, 
+                var(--secondary) 18.5%, 
+                var(--primary) 18.5%, 
+                var(--primary) 25%, 
+                var(--accent) 25%, 
+                var(--accent) 30%, 
+                #ef4444 30%, 
+                #ef4444 100%
+            );
+            border-radius: 5px;
+            margin-top: 2rem;
+            position: relative;
+        }
+
+        .bmi-marker {
+            position: absolute;
+            top: -5px;
+            width: 4px;
+            height: 20px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: left 0.5s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="dark"] .bmi-marker {
+            background: white;
+        }
+
+        /* Karty zdrowia */
+        .health-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .health-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .health-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .health-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .health-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .health-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .health-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Przepisy */
+        .recipes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .recipe-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .recipe-card:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .recipe-image {
+            height: 200px;
+            background: var(--gradient-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recipe-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, var(--bg-card));
+        }
+
+        .recipe-content {
+            padding: 1.5rem;
+        }
+
+        .recipe-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .recipe-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .recipe-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .recipe-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Aktywność fizyczna */
+        .activity-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 3rem;
+            border: 1px solid var(--border);
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .activity-item {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .activity-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .activity-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .activity-item h4 {
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        [data-theme="dark"] .activity-item h4 {
+            color: var(--primary-light);
+        }
+
+        /* Footer / Autor */
+        footer {
+            background: var(--bg-card);
+            padding: 3rem 2rem 1rem;
+            margin-top: 5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            line-height: 1.8;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary);
+        }
+
+        .author-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .author-name {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsywność */
+        @media (max-width: 768px) {
+            .nav-right {
+                gap: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--bg-card);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+                border-bottom: 1px solid var(--primary);
+                box-shadow: var(--shadow-lg);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .hero {
+                padding: 5rem 1rem 2rem;
+            }
+
+            .bmi-calculator {
+                grid-template-columns: 1fr;
+                padding: 2rem;
+            }
+
+            .bmi-result {
+                min-height: auto;
+            }
+
+            .health-cards, .recipes-container {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 3rem 1rem;
+            }
+
+            .activity-section {
+                padding: 2rem 1rem;
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Animacje wejścia */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Sprawdź zapisany motyw lub użyj domyślnego (jasny)
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <!-- Nawigacja -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">VitaLife</a>
+            <div class="nav-right">
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#home">Start</a></li>
+                    <li><a href="#bmi">Kalkulator BMI</a></li>
+                    <li><a href="#recipes">Zdrowe Przepisy</a></li>
+                    <li><a href="#activity">Aktywność</a></li>
+                    <li><a href="#author">Autor</a></li>
+                </ul>
+                <button class="theme-toggle" id="themeToggle" title="Zmień motyw">
+                    🌙
+                </button>
+                <div class="mobile-menu" id="mobileMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content fade-in">
+            <h1>Zainwestuj w Swoje Zdrowie</h1>
+            <p>Odkryj siłę aktywnego stylu życia, zbilansowanej diety i regularnych ćwiczeń. Twoje ciało to jedyne miejsce, w którym musisz mieszkać – zadbaj o nie!</p>
+            <a href="#bmi" class="cta-button pulse">Sprawdź swoje BMI</a>
+        </div>
+    </section>
+
+    <!-- Sekcja BMI -->
+    <section id="bmi">
+        <h2 class="section-title">Kalkulator BMI</h2>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Wskaźnik Masy Ciała (BMI) to międzynarodowy wskaźnik pozwalający ocenić, czy Twoja masa ciała jest prawidłowa. 
+            Pamiętaj, że jest to wskaźnik orientacyjny – nie uwzględnia np. poziomu tkanki mięśniowej.
+        </p>
+        
+        <div class="bmi-calculator">
+            <div class="bmi-inputs">
+                <div class="input-group">
+                    <label for="height">Wzrost (cm)</label>
+                    <input type="number" id="height" placeholder="np. 175" min="100" max="250">
+                </div>
+                <div class="input-group">
+                    <label for="weight">Waga (kg)</label>
+                    <input type="number" id="weight" placeholder="np. 70" min="30" max="300">
+                </div>
+                <button class="calculate-btn" onclick="calculateBMI()">Oblicz BMI</button>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 1rem;">
+                    * Zgodnie z wytycznymi Światowej Organizacji Zdrowia (WHO)
+                </p>
+            </div>
+            
+            <div class="bmi-result" id="bmiResult">
+                <p style="color: var(--text-secondary);">Wprowadź dane, aby obliczyć swój wskaźnik BMI</p>
+            </div>
+        </div>
+
+        <div class="health-cards">
+            <div class="health-card" onclick="showTip(this)">
+                <div class="card-icon">🍎</div>
+                <h3>Zdrowe Odżywianie</h3>
+                <p>Zjadaj minimum 5 porcji warzyw i owoców dziennie. Ogranicz przetworzoną żywność, cukry proste i nasycone kwasy tłuszczowe. Pij min. 2 litry wody dziennie.</p>
+            </div>
+            <div class="health-card" onclick="showTip(this)">
+                <div class="card-icon">🏃</div>
+                <h3>Aktywność Fizyczna</h3>
+                <p>Wykonuj min. 150 minut umiarkowanej aktywności fizycznej tygodniowo (np. szybki spacer, pływanie) lub 75 minut intensywnej. Ćwiczenia siłowe 2x w tygodniu.</p>
+            </div>
+            <div class="health-card" onclick="showTip(this)">
+                <div class="card-icon">😴</div>
+                <h3>Jakość Snu</h3>
+                <p>Spędzaj w łóżku 7-9 godzin dziennie. Regularna higiena snu obniża poziom kortyzolu, wspiera regenerację mięśni i poprawia funkcje kognitywne.</p>
+            </div>
+            <div class="health-card" onclick="showTip(this)">
+                <div class="card-icon">🧘</div>
+                <h3>Regeneracja i Stres</h3>
+                <p>Przewlekły stres podnosi poziom kortyzolu, co sprzyja odkładaniu tkanki tłuszczowej. Stosuj techniki relaksacyjne: medytację, głębokie oddychanie, joga.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Przepisy -->
+    <section id="recipes">
+        <h2 class="section-title">Zdrowe Przepisy</h2>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+            Propozycje posiłków bogatych w wartości odżywcze, oparte na zasadach zdrowego żywienia
+        </p>
+        
+        <div class="recipes-container">
+            <div class="recipe-card">
+                <div class="recipe-image">🥗</div>
+                <div class="recipe-content">
+                    <span class="recipe-tag">Śniadanie</span>
+                    <h3>Owsianka z Chia i Owocami</h3>
+                    <p>Płatki owsiane z nasionami chia, borówkami i orzechami włoskimi. Bogate źródło błonnika i kwasów omega-3.</p>
+                    <div class="recipe-stats">
+                        <span>🔥 320 kcal</span>
+                        <span>⏱️ 10 min</span>
+                        <span>🥗 Wege</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-card">
+                <div class="recipe-image">🐟</div>
+                <div class="recipe-content">
+                    <span class="recipe-tag">Obiad</span>
+                    <h3>Łosoś z Quinoa i Warzywami</h3>
+                    <p>Pieczony filet z łososia z komosą ryżową i pieczonymi warzywami sezonowymi. Bogactwo białka i zdrowych tłuszczów.</p>
+                    <div class="recipe-stats">
+                        <span>🔥 450 kcal</span>
+                        <span>⏱️ 30 min</span>
+                        <span>🐟 Ryba</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recipe-card">
+                <div class="recipe-image">🥑</div>
+                <div class="recipe-content">
+                    <span class="recipe-tag">Kolacja</span>
+                    <h3>Sałatka z Awokado i Kurczakiem</h3>
+                    <p>Mix sałat z grillowanym kurczakiem, awokado, pomidorami i dressingiem z oliwy i cytryny. Lekka i pożywna.</p>
+                    <div class="recipe-stats">
+                        <span>🔥 380 kcal</span>
+                        <span>⏱️ 15 min</span>
+                        <span>🍗 Mięso</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aktywność -->
+    <section id="activity">
+        <h2 class="section-title">Aktywność Fizyczna</h2>
+        <p style="text-align: center; color: var(--text-secondary); max-width: 700px; margin: 0 auto 2rem;">
+            Regularna aktywność fizyczna zmniejsza ryzyko chorób serca, cukrzycy typu 2, niektórych nowotworów oraz poprawia samopoczucie psychiczne.
+        </p>
+
+        <div class="activity-section">
+            <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">Wybierz swoją aktywność</h3>
+            <div class="activity-grid">
+                <div class="activity-item">
+                    <div class="activity-icon">🏃</div>
+                    <h4>Bieganie</h4>
+                    <p>Palenie kalorii: 600-800/h<br>Zwiększa wytrzymałość, wzmacnia serce</p>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🚴</div>
+                    <h4>Rower</h4>
+                    <p>Palenie kalorii: 400-600/h<br>Łagodny dla stawów, buduje kondycję</p>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🏊</div>
+                    <h4>Pływanie</h4>
+                    <p>Palenie kalorii: 500-700/h<br>Angażuje wszystkie grupy mięśniowe</p>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🧘</div>
+                    <h4>Joga</h4>
+                    <p>Palenie kalorii: 200-400/h<br>Wzmacnia core, poprawia elastyczność</p>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🏋️</div>
+                    <h4>Siłownia</h4>
+                    <p>Palenie kalorii: 300-500/h<br>Buduje masę mięśniową, przyspiesza metabolizm</p>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🥊</div>
+                    <h4>Trening HIIT</h4>
+                    <p>Palenie kalorii: 700-900/h<br>Efekt afterburn, poprawa wydolności</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / Autor -->
+    <footer id="author">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>O Projekcie</h4>
+                <p>VitaLife to interaktywna platforma edukacyjna promująca zdrowy styl życia, stworzona w oparciu o oficjalne wytyczne WHO i Instytutu Żywności i Żywienia.</p>
+            </div>
+            
+            <div class="footer-section">
+                <div class="author-card">
+                    <div class="author-name">Damian Kita</div>
+                    <p style="margin-bottom: 0.5rem;">Autor & Twórca</p>
+                    <p style="font-size: 0.9rem;">Web Developer | Entuzjasta zdrowego stylu życia</p>
+                    <div class="social-links">
+                        <a href="https://linktr.ee/kitadamian" target="_blank" title="Linktree" style="font-size: 0.8rem; text-decoration: none;">LINK</a>
+                        <a href="https://github.com" target="_blank" title="GitHub" style="font-size: 0.8rem;">GIT</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Źródła Naukowe</h4>
+                <p style="font-size: 0.9rem;">
+                    • WHO - Światowa Organizacja Zdrowia<br>
+                    • IŻŻ - Instytut Żywności i Żywienia<br>
+                    • ACSM - American College of Sports Medicine<br>
+                    • Harvard Health Publishing
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 VitaLife by Damian Kita. Wszelkie prawa zastrzeżone.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+                <a href="https://linktr.ee/kitadamian" target="_blank" style="color: var(--primary);">linktr.ee/kitadamian</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenu = document.getElementById('mobileMenu');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        
+        function updateThemeIcon() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        updateThemeIcon();
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon();
+        });
+
+        // Smooth scroll dla linków
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+
+        // Kalkulator BMI
+        function calculateBMI() {
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const resultDiv = document.getElementById('bmiResult');
+            
+            if (!height || !weight || height <= 0 || weight <= 0) {
+                resultDiv.innerHTML = '<p style="color: #ef4444;">Proszę wprowadzić prawidłowe dane</p>';
+                return;
+            }
+            
+            const heightInMeters = height / 100;
+            const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(1);
+            
+            let category = '';
+            let categoryClass = '';
+            let description = '';
+            let markerPosition = 0;
+            
+            // Obliczanie pozycji markera na skali (0-100%)
+            if (bmi < 18.5) {
+                category = 'Niedowaga';
+                categoryClass = 'underweight';
+                description = 'Twoja waga jest zbyt niska. Skonsultuj się z dietetykiem, aby zaplanować zdrowe przybranie na wadze. Nawodnienie i dieta bogata w zdrowe tłuszcze są kluczowe.';
+                markerPosition = (bmi / 18.5) * 18.5;
+            } else if (bmi >= 18.5 && bmi < 25) {
+                category = 'Prawidłowa waga';
+                categoryClass = 'normal';
+                description = 'Gratulacje! Twoja masa ciała jest w normie. Kontynuuj zdrowe nawyki żywieniowe i regularną aktywność fizyczną, aby utrzymać tę wartość.';
+                markerPosition = 18.5 + ((bmi - 18.5) / 6.5) * 6.5;
+            } else if (bmi >= 25 && bmi < 30) {
+                category = 'Nadwaga';
+                categoryClass = 'overweight';
+                description = 'Masz nadwagę. Warto wprowadzić delikatny deficyt kaloryczny (300-500 kcal) i zwiększyć aktywność fizyczną. Skup się na jakości jedzenia.';
+                markerPosition = 25 + ((bmi - 25) / 5) * 5;
+            } else {
+                category = 'Otyłość';
+                categoryClass = 'obese';
+                description = 'Wskazane jest skonsultowanie się z lekarzem lub dietetykiem. Konieczna jest zmiana stylu życia pod okiem specjalisty. Zacznij od małych kroków.';
+                markerPosition = Math.min(30 + ((bmi - 30) / 10) * 10, 100);
+            }
+            
+            resultDiv.innerHTML = `
+                <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-secondary);">Twoje BMI:</div>
+                <div class="bmi-value">${bmi}</div>
+                <div class="bmi-category ${categoryClass}">${category}</div>
+                <p class="bmi-info">${description}</p>
+                <div class="bmi-scale">
+                    <div class="bmi-marker" style="left: ${markerPosition}%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.7rem; color: var(--text-secondary);">
+                    <span>16</span>
+                    <span style="color: var(--secondary)">18.5</span>
+                    <span style="color: var(--primary)">25</span>
+                    <span style="color: var(--accent)">30</span>
+                    <span>40</span>
+                </div>
+            `;
+        }
+
+        // Efekt kliknięcia w karty zdrowia
+        function showTip(card) {
+            card.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                card.style.transform = '';
+            }, 300);
+        }
+
+        // Animacje przy scrollu
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.health-card, .recipe-card, .activity-item').forEach((el) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s, transform 0.6s';
+            observer.observe(el);
+        });
+
+        // Walidacja inputów BMI (tylko liczby)
+        document.getElementById('height').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+        
+        document.getElementById('weight').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        });
+    </script>
+</body>
+</html>
